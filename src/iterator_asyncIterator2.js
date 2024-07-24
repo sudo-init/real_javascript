@@ -33,6 +33,26 @@ class AsyncDataQueue {
     }
 
     [Symbol.asyncIterator]() {
-        return new AsyncDataFetch();
+        return new AsyncDataFetcher(this.#queries);
     }
 }
+
+const dataQueue = new AsyncDataQueue();
+dataQueue.enqueue('https://jsonplaceholder.typicode.com/users/1/todos');
+dataQueue.enqueue('https://jsonplaceholder.typicode.com/users/1/posts');
+dataQueue.enqueue('https://jsonplaceholder.typicode.com/users/1/albums');
+
+(async () => {
+    try {
+        for await (const data of dataQueue) {
+            console.log(data[0]);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+})();
+
+
+
+
+
